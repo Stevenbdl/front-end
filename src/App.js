@@ -8,7 +8,6 @@ import { ThemeProvider } from '@mui/styles';
 import { theme } from './Theme/index';
 
 const App = () => {
-  console.log('Theme', theme);
   return (
     <>
       <ThemeProvider theme={theme}>

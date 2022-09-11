@@ -7,14 +7,9 @@ import { CustomersTable } from "../Pages/CustomersTable/CustomersTable";
 
 export const AppRouter = () => {
   return (
-    <>
-      <Routes>
-        <Route exact path="/" element={<CustomersTable />} />
-      </Routes>
-
-      <Routes>
-        <Route exact path="/customer/attributes" element={<CustomerAttributes />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route exact path="/" element={<CustomersTable />} />
+      <Route exact path="/customer/attributes/:id" element={<CustomerAttributes />} />
+    </Routes>
   )
 }

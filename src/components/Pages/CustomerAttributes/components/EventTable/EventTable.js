@@ -1,14 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { EventHeadToolbar } from "./EventHeadToolbar";
 
-const events = [
-  { id: 1, event_name: 'generate', count: 1 },
-  { id: 2, event_name: 'purchase', count: 4 },
-  { id: 3, event_name: 'create', count: 2 },
-
-];
-
-export const EventTable = () => {
+export const EventTable = ({ customer }) => {
   return (
     <Paper>
       <EventHeadToolbar />
@@ -33,8 +26,8 @@ export const EventTable = () => {
 
           <TableBody>
             {
-              events.map((event) => (
-                <TableRow key={event.id}>
+              customer.events.map((event) => (
+                <TableRow key={event.event_name}>
                   <TableCell>
                     {event.event_name}
                   </TableCell>

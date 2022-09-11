@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { CustomersTableToolbar } from './CustomersTableToolbar';
+import { getCustomers } from '../../Services';
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 170 },
@@ -20,8 +21,8 @@ const columns = [
     label: 'Action',
     minWidth: 170,
     align: 'right',
-    view_attribute: (id) => {
-      return <IconButton component={Link} to='/customer/attributes'>
+    view_attributes: (id) => {
+      return <IconButton component={Link} to={`/customer/attributes/${id}`}>
         <VisibilityIcon />
       </IconButton>
     }
@@ -34,19 +35,34 @@ const columns = [
   },
 ];
 
-const rows = [
-  { id: 1, email: 'steve@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 2, email: 'ronald@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 3, email: 'dummy1@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 4, email: 'dummy2@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 5, email: 'dummy3@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 6, email: 'dummy4@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-  { id: 7, email: 'dummy5@test.com', last_updated: 'May 15th 2022, 10:20pm' },
-].sort((a, b) => (a.id < b.id ? -1 : 1));
+// const rows = [
+//   { id: 1, email: 'steve@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 2, email: 'ronald@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 3, email: 'dummy1@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 4, email: 'dummy2@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 5, email: 'dummy3@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 6, email: 'dummy4@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+//   { id: 7, email: 'dummy5@test.com', last_updated: 'May 15th 2022, 10:20pm' },
+// ].sort((a, b) => (a.id < b.id ? -1 : 1));
 
 export const CustomersTable = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      const { data } = await getCustomers();
+      setRows(data.customers.map((customer) => {
+        return {
+          id: customer.id,
+          email: customer.attributes.email,
+          last_updated: customer.last_updated
+        }
+      }));
+    }
+    fetchCustomers();
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -85,8 +101,8 @@ export const CustomersTable = () => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.view_attribute
-                            ? column.view_attribute(1)
+                          {column.view_attributes
+                            ? column.view_attributes(row.id)
                             : value}
                         </TableCell>
                       );

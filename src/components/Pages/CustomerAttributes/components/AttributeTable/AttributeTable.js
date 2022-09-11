@@ -1,5 +1,5 @@
 import { IconButton, Menu, MenuItem, MenuList, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ModalCreateAttribute } from "../ModalCreateAttribute";
 import { AttributeHeadToolbar } from "./AttributeHeadToolbar";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -7,16 +7,7 @@ import { useDeleteDialog } from "../../../../Generic/ModalConfirmationDialog/con
 import { ModalEditAttribute } from "../ModalEditAttribute";
 import { ModalConfirmationDialog } from "../../../../Generic/ModalConfirmationDialog/ModalConfirmationDialog";
 
-const dummyData = [
-  { id: 1, name: 'id', value: '1', can_be_modified: false },
-  { id: 2, name: 'email', value: 'steve@test.com', can_be_modified: false },
-  { id: 5, name: 'created_at', value: '2121321', can_be_modified: false },
-  { id: 3, name: 'first_name', value: 'Steve', can_be_modified: true },
-  { id: 4, name: 'job_title', value: 'Programmer', can_be_modified: true },
-
-];
-
-export const AttributeTable = ({ attributes, setAttributes }) => {
+export const AttributeTable = ({ customer, setCustomer }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openContextMenuIndex, setOpenContextMenuIndex] = useState(-1);
   const [openModalConfirmationDialog, setOpenModalConfirmationDialog] = useState(false);
@@ -41,7 +32,7 @@ export const AttributeTable = ({ attributes, setAttributes }) => {
 
   const handleDeleteAttribute = (attr) => {
     setOpenModalConfirmationDialog(true);
-    setCurrentId(attr.id);
+    setCurrentId(attr.name);
   }
 
   const handleEditAttribute = (attr) => {
@@ -49,20 +40,17 @@ export const AttributeTable = ({ attributes, setAttributes }) => {
     setAttributeToEdit({ ...attr });
   }
 
-  useEffect(() => {
-    setAttributes({
-      data_loaded: dummyData,
-      attributes: dummyData,
-    });
-  }, []);
-
   const handleOkDeleteAttribute = () => {
-    const newAttributes = attributes.attributes.filter((attr2) => attr2.id !== currentId);
+    const newAttributes = customer.attributes.state.filter((attr2) => attr2.name !== currentId);
     
-    setAttributes({
-      ...attributes,
-      attributes: newAttributes
+    setCustomer({
+      ...customer,
+      attributes: {
+        ...customer.attributes,
+        state: newAttributes
+      }
     });
+
     setCurrentId(-1);
     setOpenModalConfirmationDialog(false);
     setOpenContextMenuIndex(-1);
@@ -95,8 +83,8 @@ export const AttributeTable = ({ attributes, setAttributes }) => {
 
           <TableBody>
             {
-              attributes.attributes.map((attr, index) => (
-                <TableRow key={attr.id}>
+              customer.attributes.state.map((attr, index) => (
+                <TableRow key={attr.name}>
                   <TableCell>
                     {attr.name}
                   </TableCell>
@@ -141,8 +129,8 @@ export const AttributeTable = ({ attributes, setAttributes }) => {
       <ModalCreateAttribute
         openModalCreateAttribute={openModalCreateAttribute}
         setOpenModalCreateAttribute={setOpenModalCreateAttribute}
-        attributes={attributes}
-        setAttributes={setAttributes}
+        customer={customer}
+        setCustomer={setCustomer}
       />
       <ModalConfirmationDialog
         title="Are you sure that you want delete this attribute?"
@@ -155,8 +143,8 @@ export const AttributeTable = ({ attributes, setAttributes }) => {
         openModalEditAttribute={openModalEditAttribute}
         setOpenModalEditAttribute={setOpenModalEditAttribute}
         attributeToEdit={attributeToEdit}
-        attributes={attributes}
-        setAttributes={setAttributes}
+        customer={customer}
+        setCustomer={setCustomer}
         setOpenContextMenuIndex={setOpenContextMenuIndex}
       />
     </Paper>

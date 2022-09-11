@@ -5,8 +5,8 @@ import { useModalCreateAttributeStyles } from "./ModalCreateAttribute.style";
 export const ModalCreateAttribute = ({
   openModalCreateAttribute,
   setOpenModalCreateAttribute,
-  attributes,
-  setAttributes
+  customer,
+  setCustomer
 }) => {
   const classes = useModalCreateAttributeStyles();
   const [attribute, setAttribute] = useState({
@@ -29,20 +29,24 @@ export const ModalCreateAttribute = ({
 
   const handleCreate = () => {
     const { name, value } = attribute;
-    if ((!name || name.length < 3 || attributes.attributes.some((att) => att.name === name)) || (!value || value.length === 0)) {
+    if ((!name || name.length < 3 || customer.attributes.state.some((att) => att.name === name)) || (!value || value.length === 0)) {
       setShowErrors(true);
       return;
     }
 
     let maxId = 1;
-    attributes.attributes.forEach(attr => {
+    customer.attributes.state.forEach(attr => {
       maxId = Math.max(attr.id, maxId);
     });
-    setAttributes({
-      ...attributes,
-      attributes: [...attributes.attributes, {
-        ...attribute, id: maxId + 1
-      }]
+
+    setCustomer({
+      ...customer,
+      attributes: {
+        ...customer.attributes,
+        state: [...customer.attributes.state, {
+          ...attribute, id: maxId + 1
+        }]
+      }
     });
     handleClose();
   }
@@ -75,13 +79,13 @@ export const ModalCreateAttribute = ({
                   variant="standard"
                   value={attribute.name}
                   onChange={(e) => { setAttribute({ ...attribute, name: e.target.value }); }}
-                  error={showErrors && (attribute.name === "" || attribute.name.length < 3 || attributes.some((att) => att.name === attribute.name))}
+                  error={showErrors && (attribute.name === "" || attribute.name.length < 3 || customer.attributes.state.some((att) => att.name === attribute.name))}
                   helperText={showErrors && (
                     (attribute.name === "" && "Name Field is Required")
                     ||
                     (attribute.name.length < 3 && "Name length should be more than 3 chars")
                     ||
-                    (attributes.some((att) => att.name === attribute.name) && "There are a attribute with this name, please choose another")
+                    (customer.attributes.state.some((att) => att.name === attribute.name) && "There are a attribute with this name, please choose another")
                   )}
                 />
               </Grid>

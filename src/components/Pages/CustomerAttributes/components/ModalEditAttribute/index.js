@@ -1,18 +1,22 @@
 import { Box, Button, Grid, Modal, Slide, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useModalEditAttributeStyles } from "./ModalEditAttribute.style";
 
 export const ModalEditAttribute = ({
   openModalEditAttribute,
   setOpenModalEditAttribute,
   attributeToEdit,
-  attributes,
-  setAttributes,
-  setOpenContextMenuIndex
+  setOpenContextMenuIndex,
+  customer,
+  setCustomer
 }) => {
   const classes = useModalEditAttributeStyles();
   const [showErrors, setShowErrors] = useState(false);
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    setValue(attributeToEdit.value);
+  }, [attributeToEdit.value]);
 
   const handleClose = () => {
     setOpenModalEditAttribute(false);
@@ -25,13 +29,16 @@ export const ModalEditAttribute = ({
       setShowErrors(true);
       return;
     }
-    const newAttributes = JSON.parse(JSON.stringify(attributes.attributes));
-    newAttributes[newAttributes.findIndex((attr) => attr.id === attributeToEdit.id)].value = value;
+    const newAttributes = JSON.parse(JSON.stringify(customer.attributes.state));
+    newAttributes[newAttributes.findIndex((attr) => attr.name === attributeToEdit.name)].value = value;
 
     handleClose();
-    setAttributes({
-      ...attributes,
-      attributes: newAttributes
+    setCustomer({
+      ...customer,
+      attributes: {
+        ...customer.attributes,
+        state: newAttributes
+      }
     });
     setOpenContextMenuIndex(-1);
   }
