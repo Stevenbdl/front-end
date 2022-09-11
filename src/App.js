@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import { Navigation } from './components/Navigation';
+import { AppRouter } from './components/Routes';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from '@mui/styles';
+import { theme } from './Theme/index';
 
-function App() {
+const App = () => {
+  console.log('Theme', theme);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme />
+        <Router>
+          <Navigation />
+          <Container fixed>
+            <Box sx={{ height: '100vh', paddingTop: 12 }}>
+              <AppRouter />
+            </Box>
+          </Container>
+        </Router>
+      </ThemeProvider>
+    </>
+  )
 }
 
 export default App;
